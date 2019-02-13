@@ -25,7 +25,13 @@
     methods: {
       login() {
         this.$axios.post('login', this.formData).then((res) => {
-          console.log(res);
+          const { data: { data, meta: { msg, status } } } = res
+          if (status === 200) {
+            this.$router.push('home')
+            localStorage.setItem('token', data.token)
+          } else {
+            this.$message.error(msg)
+          }
         })
       }
     },

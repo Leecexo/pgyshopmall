@@ -1,66 +1,77 @@
 <template>
   <el-container class="container">
-    <el-header>
+    <el-header class="header">
       <el-row>
         <el-col :span="3">
-          <div class="grid-content bg-purple">logo</div>
+          <div class="grid-content bg-purple logo"><img src="../assets/msg/logo.jpg" alt="logo加载中..."></div>
         </el-col>
         <el-col :span="19">
           <div class="grid-content bg-purple-light">
-            <h2>品优购商品管理后台</h2>
+            <h2>优品网商品管理后台</h2>
           </div>
         </el-col>
         <el-col :span="1">
-          <div class="grid-content bg-purple"><a href="#">退出</a></div>
+          <div @click.prevent="login()" class="grid-content bg-purple"><a href="#">退出 <i class="el-icon-error"></i></a></div>
         </el-col>
       </el-row>
     </el-header>
     <el-container>
-      <el-aside width="200px">Aside</el-aside>
-      <el-main>Main</el-main>
+      <el-aside class="aside" width="200px">Aside</el-aside>
+      <el-main class="main">Main</el-main>
     </el-container>
-    <el-footer>Copyright ©2013-2019 品优购商品管理后台</el-footer>
+    <el-footer class="footer">Copyright ©2013-2019 优品网商品管理后台</el-footer>
   </el-container>
 </template>
 
 <script>
   export default {
+    data() {
+      return {
 
+      }
+    },
+    methods: {
+      login() {
+        this.$router.push('login')
+      }
+    },
   }
 </script>
 
 <style>
   .container {
     height: 100%;
+    /* background-color: #B3C0D1; */
   }
 
-  h2 {
-    color: #fff;
+  .logo img {
+    width: 200px;
+    height: 60px;
   }
 
-  .el-header {
-    background-color: #B3C0D1;
+  .header {
     color: #333;
     text-align: center;
     line-height: 60px;
   }
 
-  .el-footer {
+  .footer {
     background-color: #B3C0D1;
     color: #333;
     text-align: center;
-    line-height: 20px;
-    height: 20px;
-    font-size: 14px;
+    line-height: 30px;
+    height: 30px!important;
+    font-size: 12px;
+    font-weight: 700;
   }
 
-  .el-aside {
+  .aside {
     background-color: #D3DCE6;
     color: #333;
     text-align: center;
   }
 
-  .el-main {
+.main {
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
