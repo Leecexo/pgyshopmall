@@ -18,7 +18,7 @@
     <el-container>
       <el-aside class="aside" width="200px">
         <!-- 菜单 -->
-        <el-menu default-active="1">
+        <el-menu default-active="1" unique-opened router>
           <!-- 用户管理 -->
           <el-submenu index="1">
             <template slot="title">
@@ -37,7 +37,7 @@
             <el-menu-item index="1-2"><i class="el-icon-tickets"></i>权限列表2</el-menu-item>
           </el-submenu>
           <!-- 商品管理 -->
-          <el-submenu index="2">
+          <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>商品管理</span>
@@ -64,7 +64,9 @@
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main class="main">Main</el-main>
+      <el-main class="main">
+        <router-view></router-view>
+      </el-main>
     </el-container>
     <el-footer class="footer">Copyright ©2013-2019 优品网商品管理后台</el-footer>
   </el-container>
@@ -126,14 +128,11 @@
   }
 
   .aside {
-    /* background-color: #D3DCE6; */
     color: #333;
-    text-align: center;
   }
 
   .main {
     background-color: #E9EEF3;
     color: #333;
-    text-align: center;
   }
 </style>
