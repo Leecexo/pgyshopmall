@@ -27,8 +27,13 @@
         this.$axios.post('login', this.formData).then((res) => {
           const { data: { data, meta: { msg, status } } } = res
           if (status === 200) {
-            this.$router.push('home')
+            // console.log(data.id);
+            // this.$router.push({ name: 'home', params: { userId: data.id } });
+            this.$router.push('home');
             localStorage.setItem('token', data.token)
+            // console.log(data.id);
+            localStorage.setItem('userid', data.id)
+            // console.log(localStorage.getItem('userid'));
           } else {
             this.$message.error(msg)
           }

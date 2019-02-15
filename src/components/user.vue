@@ -11,7 +11,7 @@
     <el-input placeholder="请输入内容" v-model="query" class="search" clearable @clear="clearInputVal()">
       <el-button slot="append" icon="el-icon-search" @click="gotosearch()"></el-button>
     </el-input>
-    <el-button type="success" plain @click="addUser()">添加用户</el-button>
+    <el-button type="success" plain @click="addUserShow()">添加用户</el-button>
     <!-- 表格 -->
     <el-table :data="tableData" style="width: 100%" class="userList">
       <el-table-column prop="id" label="#" width="80">
@@ -68,6 +68,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
         <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
+        <!-- <el-button type="primary" @click="userAdd()">确 定</el-button> -->
       </div>
     </el-dialog>
   </el-card>
@@ -100,10 +101,10 @@
         // 添加用户表单验证
         rules: {
           username: [
-            { required: true, message: '请输入用户名' }
+            { required: true, message: '请输入用户名', trigger: 'blur' }
           ],
           password: [
-            { required: true, message: '请输入用户密码' }
+            { required: true, message: '请输入用户密码', trigger: 'blur' }
           ],
 
         },
@@ -134,15 +135,22 @@
         this.pagenum = 1;
         this.getOneData();
       },
-      // 添加用户
-      addUser() {
+      // 添加用户-展示
+      addUserShow() {
         this.dialogFormVisibleAdd = true;
       },
+      // 添加用户-post
+      // userAdd() {
+      //   this.$axios.post(`users`).then((res) => {
+
+      //   });
+      // },
       // 修改用户状态
       stateEdit(uId) {
         this.mg_state = !this.mg_state;
         this.$axios.put(`users/${uId}/state/${this.mg_state}`).then((res) => {
-          console.log(res);
+          // console.log(res);
+          this.$message.success("修改成功！");
         });
       },
       // 首屏数据

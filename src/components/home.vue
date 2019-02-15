@@ -5,13 +5,13 @@
         <el-col :span="3">
           <div class="grid-content bg-purple logo"><img @click.prevent="gotoHome()" src="../assets/msg/logo.png" alt="logo加载中..."></div>
         </el-col>
-        <el-col :span="19">
+        <el-col :span="16">
           <div class="grid-content bg-purple-light">
             <h2>优品网商品管理后台</h2>
           </div>
         </el-col>
-        <el-col :span="1">
-          <div @click.prevent="loginout()" class="grid-content bg-purple"><a href="#">退出 <i class="el-icon-error"></i></a></div>
+        <el-col :span="4">
+          <div class="grid-content bg-purple">欢迎 {{ userInfo }}，<a href="#" @click.prevent="loginout()"> 退出系统 <i class="el-icon-error"></i></a></div>
         </el-col>
       </el-row>
     </el-header>
@@ -76,7 +76,7 @@
   export default {
     data() {
       return {
-
+        userInfo: '管理员',
       }
     },
     // 验证是否有正确token值，如果没有则跳转回login进行登陆
@@ -84,6 +84,9 @@
       if (!localStorage.getItem('token')) {
         this.$router.push('login')
       }
+    },
+    mounted() {
+      this.getUser();
     },
     methods: {
       // 退出方法
@@ -96,6 +99,19 @@
       },
       gotoHome() {
         this.$router.push('home');
+      },
+      getUser() {
+        // 定义请求头token
+        const AUTH_TOKEN = localStorage.getItem("token");
+        // 获取保存的token值
+        this.$axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+        // 将用户id转换为数字类型
+        const Id = Number(localStorage.getItem('userid'));
+        // 携带用户id请求用户信息，将用户名显示到欢迎后
+        this.$axios.get(`users/${Id}`).then((res) => {
+          // console.log(res);
+          this.userInfo = res.data.data.username;
+        });
       }
     },
   }
