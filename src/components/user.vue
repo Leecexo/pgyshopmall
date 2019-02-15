@@ -35,9 +35,10 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" width="240">
-        <template>
+        <template slot-scope="scope">
           <el-row>
-            <el-button type="primary" icon="el-icon-edit" circle size="mini" plain></el-button>
+            <el-button @click="dialogFormVisibleEdit = true" type="primary" icon="el-icon-edit" circle size="mini"
+              plain></el-button>
             <el-button type="success" icon="el-icon-check" circle size="mini" plain></el-button>
             <el-button type="danger" icon="el-icon-delete" circle size="mini" plain></el-button>
           </el-row>
@@ -71,6 +72,28 @@
         <!-- <el-button type="primary" @click="userAdd()">确 定</el-button> -->
       </div>
     </el-dialog>
+    <!-- 编辑用户 信息弹窗 -->
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
+      <el-form label-position="left" label-width="80px" :model="formEditData" :rules="rules">
+        <el-form-item label="姓名" prop="username">
+          <el-input v-model="formEditData.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="formEditData.password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <el-input v-model="formEditData.email"></el-input>
+        </el-form-item>
+        <el-form-item label="电话">
+          <el-input v-model="formEditData.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="stateEdit()">保 存</el-button>
+        <!-- <el-button type="primary" @click="userAdd()">确 定</el-button> -->
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 <script>
@@ -96,8 +119,17 @@
           email: '',
           mobile: ''
         },
-        // 添加用户弹窗初始值
+        // 编辑用户 初始值
+        formEditData: {
+          username: '',
+          password: '',
+          email: '',
+          mobile: ''
+        },
+        // 添加用户 弹窗初始值
         dialogFormVisibleAdd: false,
+        // 编辑用户 弹窗初始值
+        dialogFormVisibleEdit: false,
         // 添加用户表单验证
         rules: {
           username: [
@@ -152,6 +184,11 @@
           // console.log(res);
           this.$message.success("修改成功！");
         });
+      },
+      // 修改用户信息
+      editUser(userId) {
+        console.log(userId);
+
       },
       // 首屏数据
       getOneData() {

@@ -29,7 +29,7 @@
           if (status === 200) {
             // console.log(data.id);
             // this.$router.push({ name: 'home', params: { userId: data.id } });
-            this.$router.push('home');
+            this.$router.push('index');
             localStorage.setItem('token', data.token)
             // console.log(data.id);
             localStorage.setItem('userid', data.id)

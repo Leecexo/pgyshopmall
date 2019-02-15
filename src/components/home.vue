@@ -1,13 +1,13 @@
 <template>
   <el-container class="container">
     <el-header class="header">
-      <el-row>
+      <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="3">
-          <div class="grid-content bg-purple logo"><img @click.prevent="gotoHome()" src="../assets/msg/logo.png" alt="logo加载中..."></div>
+          <div class="grid-content bg-purple logo"><img @click="gotoHome()" src="../assets/msg/logo.png" alt="logo加载中..."></div>
         </el-col>
         <el-col :span="16">
           <div class="grid-content bg-purple-light">
-            <h2>优品网商品管理后台</h2>
+            <!-- <h2>优品网商品管理后台</h2> -->
           </div>
         </el-col>
         <el-col :span="4">
@@ -65,6 +65,7 @@
         </el-menu>
       </el-aside>
       <el-main class="main">
+
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -98,7 +99,7 @@
         this.$message.success('退出登陆成功！');
       },
       gotoHome() {
-        this.$router.push('home');
+        this.$router.push('index');
       },
       getUser() {
         // 定义请求头token
