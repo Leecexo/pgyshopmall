@@ -3,7 +3,8 @@
     <el-header class="header">
       <el-row>
         <el-col :span="3">
-          <div class="grid-content bg-purple logo"><img src="../assets/msg/logo.png" alt="logo加载中..."></div>
+          <div class="grid-content bg-purple logo"><a href="" @click.prevent="gotoHome()"><img src="../assets/msg/logo.png"
+                alt="logo加载中..."></a></div>
         </el-col>
         <el-col :span="19">
           <div class="grid-content bg-purple-light">
@@ -93,6 +94,9 @@
         // 跳转到login页面
         this.$router.push('login');
         this.$message.success('退出登陆成功！');
+      },
+      gotoHome() {
+        this.$router.push('home');
       }
     },
   }
