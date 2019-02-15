@@ -3,8 +3,7 @@
     <el-header class="header">
       <el-row>
         <el-col :span="3">
-          <div class="grid-content bg-purple logo"><a href="" @click.prevent="gotoHome()"><img src="../assets/msg/logo.png"
-                alt="logo加载中..."></a></div>
+          <div class="grid-content bg-purple logo"><img @click.prevent="gotoHome()" src="../assets/msg/logo.png" alt="logo加载中..."></div>
         </el-col>
         <el-col :span="19">
           <div class="grid-content bg-purple-light">
@@ -111,6 +110,7 @@
   .logo img {
     width: 200px;
     height: 60px;
+    cursor: pointer;
   }
 
   .header,
