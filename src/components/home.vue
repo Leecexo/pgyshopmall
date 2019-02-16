@@ -11,21 +11,22 @@
           </div>
         </el-col>
         <el-col :span="4">
-          <div class="grid-content bg-purple">欢迎 {{ userInfo }}，<a href="#" @click.prevent="loginout()"> 退出系统 <i class="el-icon-error"></i></a></div>
+          <div class="userinfo">欢迎 <span>{{ userInfo }}</span>，<a href="#" @click.prevent="loginout()"> 退出系统 <i class="el-icon-error"></i></a></div>
         </el-col>
       </el-row>
     </el-header>
     <el-container>
       <el-aside class="aside" width="200px">
         <!-- 菜单 -->
-        <el-menu default-active="1" unique-opened router>
+        <el-menu default-active="1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b"
+          unique-opened router>
           <!-- 用户管理 -->
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>用户管理</span>
             </template>
-            <el-menu-item index="user"><i class="el-icon-tickets"></i>用户列表</el-menu-item>
+            <el-menu-item index="user"><i class="el-icon-caret-right"></i>用户列表</el-menu-item>
           </el-submenu>
           <!-- 权限管理 -->
           <el-submenu index="2">
@@ -33,8 +34,8 @@
               <i class="el-icon-location"></i>
               <span>权限管理</span>
             </template>
-            <el-menu-item index="1-1"><i class="el-icon-tickets"></i>权限列表</el-menu-item>
-            <el-menu-item index="1-2"><i class="el-icon-tickets"></i>权限列表2</el-menu-item>
+            <el-menu-item index="1-1"><i class="el-icon-caret-right"></i>角色列表</el-menu-item>
+            <el-menu-item index="1-2"><i class="el-icon-caret-right"></i>权限列表</el-menu-item>
           </el-submenu>
           <!-- 商品管理 -->
           <el-submenu index="3">
@@ -42,9 +43,9 @@
               <i class="el-icon-location"></i>
               <span>商品管理</span>
             </template>
-            <el-menu-item index="1-1"><i class="el-icon-tickets"></i>商品列表</el-menu-item>
-            <el-menu-item index="1-2"><i class="el-icon-tickets"></i>商品分类</el-menu-item>
-            <el-menu-item index="1-2"><i class="el-icon-tickets"></i>商品分类</el-menu-item>
+            <el-menu-item index="1-1"><i class="el-icon-caret-right"></i>商品列表</el-menu-item>
+            <el-menu-item index="1-2"><i class="el-icon-caret-right"></i>商品分类</el-menu-item>
+            <el-menu-item index="1-2"><i class="el-icon-caret-right"></i>商品分类</el-menu-item>
           </el-submenu>
           <!-- 订单管理 -->
           <el-submenu index="4">
@@ -52,7 +53,7 @@
               <i class="el-icon-location"></i>
               <span>订单管理</span>
             </template>
-            <el-menu-item index="1-1"><i class="el-icon-tickets"></i>订单列表</el-menu-item>
+            <el-menu-item index="1-1"><i class="el-icon-caret-right"></i>订单列表</el-menu-item>
           </el-submenu>
           <!-- 数据统计 -->
           <el-submenu index="5">
@@ -60,7 +61,7 @@
               <i class="el-icon-location"></i>
               <span>数据统计</span>
             </template>
-            <el-menu-item index="1-1"><i class="el-icon-tickets"></i>数据统计</el-menu-item>
+            <el-menu-item index="1-1"><i class="el-icon-caret-right"></i>数据统计</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -132,8 +133,8 @@
 
   .header,
   .header a {
-    background-color: #545C64;
-    color: #fff;
+    /* background-color: #E6A23C; */
+    color: #333;
     text-align: center;
     line-height: 60px;
   }
@@ -149,7 +150,20 @@
   }
 
   .aside {
-    color: #333;
+    background-color: #545c64;
+    color: #fff;
+  }
+
+  .el-menu {
+    border-right: none;
+  }
+
+  .userinfo {
+    font-size: 14px;
+  }
+
+  .userinfo span {
+    color: #409EFF;
   }
 
   .main {

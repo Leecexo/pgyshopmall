@@ -30,9 +30,9 @@
             // console.log(data.id);
             // this.$router.push({ name: 'home', params: { userId: data.id } });
             this.$router.push('index');
-            localStorage.setItem('token', data.token)
+            localStorage.setItem('userid', data.id);
+            localStorage.setItem('token', data.token);
             // console.log(data.id);
-            localStorage.setItem('userid', data.id)
             // console.log(localStorage.getItem('userid'));
           } else {
             this.$message.error(msg)

@@ -11,7 +11,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: index
+      redirect: '/index'
     },
     {
       name: 'home',
@@ -25,7 +25,7 @@ export default new Router({
         name: 'index',
         path: '/index',
         component: index
-      }]
+      },]
     }, {
       name: 'login',
       path: '/login',

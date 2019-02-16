@@ -11,7 +11,7 @@
     <el-input placeholder="请输入内容" v-model="query" class="search" clearable @clear="clearInputVal()">
       <el-button slot="append" icon="el-icon-search" @click="gotosearch()"></el-button>
     </el-input>
-    <el-button type="success" plain @click="addUserShow()">添加用户</el-button>
+    <el-button type="primary" plain @click="addUserShow()">添加用户</el-button>
     <!-- 表格 -->
     <el-table :data="tableData" style="width: 100%" class="userList">
       <el-table-column prop="id" label="#" width="80">
@@ -30,24 +30,23 @@
       </el-table-column>
       <el-table-column label="用户状态" width="120">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949" @change="stateEdit(scope.row.id)">
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949" @change="stateEdit(scope.row)">
           </el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="240">
         <template slot-scope="scope">
           <el-row>
-            <el-button @click="dialogFormVisibleEdit = true" type="primary" icon="el-icon-edit" circle size="mini"
-              plain></el-button>
-            <el-button type="success" icon="el-icon-check" circle size="mini" plain></el-button>
-            <el-button type="danger" icon="el-icon-delete" circle size="mini" plain></el-button>
+            <el-button @click="editUsershow(scope.row)" type="primary" icon="el-icon-edit" circle size="mini" plain></el-button>
+            <el-button @click="deleteUser(scope.row)" type="danger" icon="el-icon-delete" circle size="mini" plain></el-button>
+            <el-button @click="statusUser(scope.row)" type="success" icon="el-icon-check" circle size="mini" plain></el-button>
           </el-row>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pagenum"
-      :page-sizes="[2, 4, 6, 8]" :page-size="1" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
 
     <!-- 添加用户弹窗 -->
@@ -68,77 +67,79 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
-        <!-- <el-button type="primary" @click="userAdd()">确 定</el-button> -->
+        <!-- <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button> -->
+        <el-button type="primary" @click="userAdd()">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 编辑用户 信息弹窗 -->
     <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
-      <el-form label-position="left" label-width="80px" :model="formEditData" :rules="rules">
+      <el-form label-position="left" label-width="80px" :model="formData" :rules="rules">
         <el-form-item label="姓名" prop="username">
-          <el-input v-model="formEditData.username"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="formEditData.password"></el-input>
+          <el-input v-model="formData.username" disabled></el-input>
         </el-form-item>
         <el-form-item label="邮箱">
-          <el-input v-model="formEditData.email"></el-input>
+          <el-input v-model="formData.email"></el-input>
         </el-form-item>
         <el-form-item label="电话">
-          <el-input v-model="formEditData.mobile"></el-input>
+          <el-input v-model="formData.mobile"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
-        <el-button type="primary" @click="stateEdit()">保 存</el-button>
+        <el-button type="primary" @click="editUser(formData.id)">保 存</el-button>
         <!-- <el-button type="primary" @click="userAdd()">确 定</el-button> -->
       </div>
     </el-dialog>
+    <!-- 编辑用户权限 信息弹窗 -->
+    <el-dialog title="编辑用户权限" :visible.sync="dialogFormVisibleStatus">
+      <el-form :model="formData" label-width="80px" label-position="left">
+        <el-form-item label="用户名称">{{ usersName }}</el-input>
+        </el-form-item>
+        <el-form-item label="用户权限">
+          <el-select v-model="userStateval">
+            <!-- 默认第一个为 请选择 -->
+            <el-option label="请选择" :value="-1" disabled></el-option>
+            <el-option v-for="(item) in routsList" :label="item.roleName" :key="item.id" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleStatus = false">取 消</el-button>
+        <el-button type="primary" @click="editUserStatus(formData)">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </el-card>
 </template>
 <script>
   export default {
     data() {
       return {
-        // 搜索框 初始值
-        query: '',
-        // 数据总量 初始值
-        total: -1,
-        // 当前分页 初始值
-        pagenum: 1,
-        // 每页数据量 初始值
-        pagesize: 2,
-        // 用户状态初始值
-        mg_state: true,
-        // 用户列表 数据初始值
-        tableData: [],
-        // 添加用户弹窗页面初始值
-        formData: {
+        query: '',// 搜索框 初始值
+        total: -1, // 数据总量 初始值
+        pagenum: 1, // 当前分页 初始值
+        pagesize: 10, // 每页数据量 初始值
+        mg_state: true, // 用户状态初始值
+        tableData: [],// 用户列表 数据初始值
+        formData: {// 添加/编辑用户弹窗页面初始值
           username: '',
           password: '',
           email: '',
           mobile: ''
         },
-        // 编辑用户 初始值
-        formEditData: {
-          username: '',
-          password: '',
-          email: '',
-          mobile: ''
-        },
-        // 添加用户 弹窗初始值
-        dialogFormVisibleAdd: false,
-        // 编辑用户 弹窗初始值
-        dialogFormVisibleEdit: false,
-        // 添加用户表单验证
-        rules: {
+        dialogFormVisibleAdd: false,  // 添加用户 弹窗初始值
+        dialogFormVisibleEdit: false,  // 编辑用户 弹窗初始值
+        dialogFormVisibleStatus: false,  // 编辑用户权限 弹窗初始值
+        usersName: "", // 用户权限初始值
+        userStateval: -1, //用户权限列表 初始值
+        routsList: [],// 用户权限中的列表 初始值
+        rules: { // 添加用户表单验证
           username: [
             { required: true, message: '请输入用户名', trigger: 'blur' }
           ],
           password: [
             { required: true, message: '请输入用户密码', trigger: 'blur' }
           ],
-
         },
       }
     },
@@ -147,22 +148,55 @@
     },
     methods: {
       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        // console.log(`每页 ${val} 条`);
         this.pagenum = 1;
         this.pagesize = val;
         this.getOneData();
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        // console.log(`当前页: ${val}`);
         this.pagenum = val;
         this.getOneData();
       },
-      // 搜索功能
+      // 修改用户权限-展示
+      statusUser(user) {
+        // console.log(user);
+        this.formData = user;
+        this.dialogFormVisibleStatus = true; // 展示修改权限框
+        this.usersName = user.username; // 给用户名位置赋值
+        // 获取所有角色值并填充到下拉菜单中
+        this.$axios.get(`roles`).then((res) => {
+          const { data: { data, meta: { msg, status } } } = res;
+          // data是个数组，里面是对象
+          if (status === 200) {
+            this.routsList = data;
+          }
+        });
+        // 根据用户id获取当前用户的 角色id值
+        this.$axios.get(`users/${user.id}`).then((res) => {
+          const { data: { data, meta: { msg, status } } } = res;
+          if (status === 200) {
+            this.userStateval = data.rid;
+          }
+        });
+      },
+      // 修改用户权限-提交
+      editUserStatus(user) {
+        // console.log(this.userStateval);
+        this.$axios.put(`users/${user.id}/role`, { rid: this.userStateval }).then((res) => {
+          const { data: { data, meta: { msg, status } } } = res;
+          if (status === 200) {
+            this.dialogFormVisibleStatus = false; // 隐藏 修改权限框
+            this.$message.success(msg);
+          }
+
+        });
+      },// 搜索功能
       gotosearch() {
         this.pagenum = 1;
         this.getOneData();
       },
-      // 清空用户
+      // 清空用户搜索框
       clearInputVal() {
         this.pagenum = 1;
         this.getOneData();
@@ -170,37 +204,103 @@
       // 添加用户-展示
       addUserShow() {
         this.dialogFormVisibleAdd = true;
+        this.formData = {};
       },
       // 添加用户-post
-      // userAdd() {
-      //   this.$axios.post(`users`).then((res) => {
-
-      //   });
-      // },
-      // 修改用户状态
-      stateEdit(uId) {
-        this.mg_state = !this.mg_state;
-        this.$axios.put(`users/${uId}/state/${this.mg_state}`).then((res) => {
-          // console.log(res);
-          this.$message.success("修改成功！");
+      userAdd() {
+        // 定义请求头token 获取保存的token值
+        this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
+        this.$axios.post(`users`, this.formData).then((res) => {
+          const { data: { data, meta: { msg, status } } } = res;
+          if (status === 201) {
+            this.$message.success(msg);
+            this.dialogFormVisibleAdd = false;
+            this.pagenum = 1;
+            this.getOneData();
+          } else if (status === 400) {
+            this.$message.error(msg);
+          }
         });
       },
-      // 修改用户信息
-      editUser(userId) {
-        console.log(userId);
-
+      // 修改用户状态
+      stateEdit(user) {
+        // 定义请求头token = 获取保存的token值
+        this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
+        this.$axios.put(`users/${user.id}/state/${user.mg_state}`).then((res) => {
+          // console.log(res);
+          const { data: { data, meta: { msg, status } } } = res;
+          if (status === 200) {
+            this.$message.success("修改成功！");
+            // 刷新当前页
+            this.getOneData();
+          } else if (status === 404) {
+            this.$message.error("服务器繁忙请稍后再试！");
+          }
+        });
       },
-      // 首屏数据
+      // 修改用户信息-展示
+      editUsershow(user) {
+        // 展示编辑弹窗
+        this.dialogFormVisibleEdit = true;
+        // 展示当前点击用户信息
+        this.formData = user;
+      },
+      // 修改用户信息
+      editUser(userid) {
+        console.log(userid);
+        // 定义请求头token = 获取保存的token值
+        this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
+        this.$axios.put(`users/${userid}`, this.formData).then((res) => {
+          console.log(res, this.formData);
+          const { data: { data, meta: { msg, status } } } = res;
+          if (status === 200) {
+            this.$message.success(msg);
+            // 关闭弹窗
+            this.dialogFormVisibleEdit = false;
+            // 刷新当前页
+            this.getOneData();
+          } else if (status === 404) {
+            this.$message.error("服务器繁忙请稍后再试！");
+          }
+        });
+      },
+      // 删除用户
+      deleteUser(user) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 定义请求头token = 获取保存的token值
+          this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
+          this.$axios.delete(`users/${user.id}`).then((res) => {
+            const { data: { data, meta: { msg, status } } } = res;
+            console.log(res);
+            if (status === 200) {
+              this.$message.success(msg);
+              // 关闭弹窗
+              this.dialogFormVisibleEdit = false;
+              // 刷新当前页
+              this.getOneData();
+            } else if (status === 404) {
+              this.$message.error("服务器繁忙请稍后再试！");
+            }
+          });
+        }).catch(() => {
+          this.$message.info('已取消删除!');
+        });
+      },
+      // 加载首屏数据
       getOneData() {
-        // 定义请求头token
-        const AUTH_TOKEN = localStorage.getItem("token");
-        // 获取保存的token值
-        this.$axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+        // 定义请求头token = 获取保存的token值
+        this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
         // 发送数据请求
         this.$axios.get(`users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`).then((res) => {
           const { data: { data: { total, users }, meta: { msg, status } } } = res;
           if (status === 400) {
             this.$message.error(msg);
+          } else if (status === 404) {
+            this.$message.error("服务器繁忙请稍后再试！");
           };
           // console.log(res);
           this.tableData = users;
