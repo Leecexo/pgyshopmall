@@ -1,12 +1,7 @@
 <template>
   <!-- 右侧卡片容器 -->
   <el-card>
-    <!-- 面包屑导航 -->
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+    <crumbs val1="用户管理" val2="用户列表"></crumbs>
     <!-- 搜索 -->
     <el-input placeholder="请输入内容" v-model="query" class="search" clearable @clear="clearInputVal()">
       <el-button slot="append" icon="el-icon-search" @click="gotosearch()"></el-button>
@@ -46,7 +41,7 @@
     </el-table>
     <!-- 分页 -->
     <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pagenum"
-      :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      :page-sizes="[10, 20, 50, 100]" :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
 
     <!-- 添加用户弹窗 -->
@@ -159,38 +154,35 @@
         this.getOneData();
       },
       // 修改用户权限-展示
-      statusUser(user) {
+      async statusUser(user) {
         // console.log(user);
         this.formData = user;
         this.dialogFormVisibleStatus = true; // 展示修改权限框
         this.usersName = user.username; // 给用户名位置赋值
         // 获取所有角色值并填充到下拉菜单中
-        this.$axios.get(`roles`).then((res) => {
-          const { data: { data, meta: { msg, status } } } = res;
-          // data是个数组，里面是对象
-          if (status === 200) {
-            this.routsList = data;
-          }
-        });
+        const res = await this.$axios.get(`roles`);
+        const { data: { data, meta: { msg, status } } } = res;
+        // data是个数组，里面是对象
+        if (status === 200) {
+          this.routsList = data;
+        }
         // 根据用户id获取当前用户的 角色id值
-        this.$axios.get(`users/${user.id}`).then((res) => {
-          const { data: { data, meta: { msg, status } } } = res;
-          if (status === 200) {
-            this.userStateval = data.rid;
-          }
-        });
+        const res2 = await this.$axios.get(`users/${user.id}`);
+        const status2 = res2.data.meta.status;
+        if (status2 === 200) {
+          this.userStateval = res2.data.data.rid;
+        }
+
       },
       // 修改用户权限-提交
-      editUserStatus(user) {
+      async editUserStatus(user) {
         // console.log(this.userStateval);
-        this.$axios.put(`users/${user.id}/role`, { rid: this.userStateval }).then((res) => {
-          const { data: { data, meta: { msg, status } } } = res;
-          if (status === 200) {
-            this.dialogFormVisibleStatus = false; // 隐藏 修改权限框
-            this.$message.success(msg);
-          }
-
-        });
+        const res = await this.$axios.put(`users/${user.id}/role`, { rid: this.userStateval });
+        const { data: { data, meta: { msg, status } } } = res;
+        if (status === 200) {
+          this.dialogFormVisibleStatus = false; // 隐藏 修改权限框
+          this.$message.success(msg);
+        }
       },// 搜索功能
       gotosearch() {
         this.pagenum = 1;
@@ -207,36 +199,35 @@
         this.formData = {};
       },
       // 添加用户-post
-      userAdd() {
+      async userAdd() {
         // 定义请求头token 获取保存的token值
-        this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
-        this.$axios.post(`users`, this.formData).then((res) => {
-          const { data: { data, meta: { msg, status } } } = res;
-          if (status === 201) {
-            this.$message.success(msg);
-            this.dialogFormVisibleAdd = false;
-            this.pagenum = 1;
-            this.getOneData();
-          } else if (status === 400) {
-            this.$message.error(msg);
-          }
-        });
+        // this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
+        const res = await this.$axios.post(`users`, this.formData);
+        const { data: { data, meta: { msg, status } } } = res;
+        if (status === 201) {
+          this.$message.success(msg);
+          this.dialogFormVisibleAdd = false;
+          this.pagenum = 1;
+          this.getOneData();
+        } else if (status === 400) {
+          this.$message.error(msg);
+        }
       },
       // 修改用户状态
-      stateEdit(user) {
+      async stateEdit(user) {
         // 定义请求头token = 获取保存的token值
-        this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
-        this.$axios.put(`users/${user.id}/state/${user.mg_state}`).then((res) => {
-          // console.log(res);
-          const { data: { data, meta: { msg, status } } } = res;
-          if (status === 200) {
-            this.$message.success("修改成功！");
-            // 刷新当前页
-            this.getOneData();
-          } else if (status === 404) {
-            this.$message.error("服务器繁忙请稍后再试！");
-          }
-        });
+        // this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
+        const res = await this.$axios.put(`users/${user.id}/state/${user.mg_state}`);
+        // console.log(res);
+        const { data: { data, meta: { msg, status } } } = res;
+        if (status === 200) {
+          this.$message.success("修改成功！");
+          // 刷新当前页
+          this.getOneData();
+        } else if (status === 404) {
+          this.$message.error("服务器繁忙请稍后再试！");
+        }
+
       },
       // 修改用户信息-展示
       editUsershow(user) {
@@ -246,23 +237,20 @@
         this.formData = user;
       },
       // 修改用户信息
-      editUser(userid) {
-        console.log(userid);
-        // 定义请求头token = 获取保存的token值
-        this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
-        this.$axios.put(`users/${userid}`, this.formData).then((res) => {
-          console.log(res, this.formData);
-          const { data: { data, meta: { msg, status } } } = res;
-          if (status === 200) {
-            this.$message.success(msg);
-            // 关闭弹窗
-            this.dialogFormVisibleEdit = false;
-            // 刷新当前页
-            this.getOneData();
-          } else if (status === 404) {
-            this.$message.error("服务器繁忙请稍后再试！");
-          }
-        });
+      async editUser(userid) {
+        // console.log(userid);
+        const res = await this.$axios.put(`users/${userid}`, this.formData);
+        // console.log(res, this.formData);
+        const { data: { data, meta: { msg, status } } } = res;
+        if (status === 200) {
+          this.$message.success(msg);
+          // 关闭弹窗
+          this.dialogFormVisibleEdit = false;
+          // 刷新当前页
+          this.getOneData();
+        } else if (status === 404) {
+          this.$message.error("服务器繁忙请稍后再试！");
+        }
       },
       // 删除用户
       deleteUser(user) {
@@ -270,42 +258,40 @@
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          // 定义请求头token = 获取保存的token值
-          this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
-          this.$axios.delete(`users/${user.id}`).then((res) => {
-            const { data: { data, meta: { msg, status } } } = res;
-            console.log(res);
-            if (status === 200) {
-              this.$message.success(msg);
-              // 关闭弹窗
-              this.dialogFormVisibleEdit = false;
-              // 刷新当前页
-              this.getOneData();
-            } else if (status === 404) {
-              this.$message.error("服务器繁忙请稍后再试！");
-            }
-          });
+        }).then(async () => {
+          const res = await this.$axios.delete(`users/${user.id}`);
+          const { data: { data, meta: { msg, status } } } = res;
+          // console.log(res);
+          if (status === 200) {
+            this.$message.success(msg);
+            // 关闭弹窗
+            this.dialogFormVisibleEdit = false;
+            // 刷新当前页
+            this.pagenum = 1;
+            this.getOneData();
+          } else if (status === 404) {
+            this.$message.error("服务器繁忙请稍后再试！");
+          }
+
         }).catch(() => {
           this.$message.info('已取消删除!');
         });
       },
       // 加载首屏数据
-      getOneData() {
-        // 定义请求头token = 获取保存的token值
-        this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
+      async getOneData() {
         // 发送数据请求
-        this.$axios.get(`users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`).then((res) => {
-          const { data: { data: { total, users }, meta: { msg, status } } } = res;
-          if (status === 400) {
-            this.$message.error(msg);
-          } else if (status === 404) {
-            this.$message.error("服务器繁忙请稍后再试！");
-          };
-          // console.log(res);
+        const res = await this.$axios.get(`users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
+        const { data, meta: { msg, status } } = res.data;
+        if (status === 400) {
+          this.$message.error(msg);
+          this.$router.push('login');
+        } else if (status === 404) {
+          this.$message.error("服务器繁忙请稍后再试！");
+        } else if (status === 200) {
+          const { total, users } = data;
           this.tableData = users;
           this.total = total;
-        })
+        };
       },
     },
   }
