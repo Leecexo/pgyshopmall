@@ -29,7 +29,7 @@
           </el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="240">
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-row>
             <el-button @click="editUsershow(scope.row)" type="primary" icon="el-icon-edit" circle size="mini" plain></el-button>

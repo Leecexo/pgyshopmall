@@ -34,8 +34,8 @@
               <i class="el-icon-location"></i>
               <span>权限管理</span>
             </template>
-            <el-menu-item index="1-1"><i class="el-icon-caret-right"></i>角色列表</el-menu-item>
-            <el-menu-item index="1-2"><i class="el-icon-caret-right"></i>权限列表</el-menu-item>
+            <el-menu-item index="role"><i class="el-icon-caret-right"></i>角色列表</el-menu-item>
+            <el-menu-item index="state"><i class="el-icon-caret-right"></i>权限列表</el-menu-item>
           </el-submenu>
           <!-- 商品管理 -->
           <el-submenu index="3">
