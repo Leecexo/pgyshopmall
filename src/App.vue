@@ -13,5 +13,6 @@
 <style>
   #app {
     height: 100%;
+    /* background: url('../assets/msg/login.jpg'); */
   }
 </style>

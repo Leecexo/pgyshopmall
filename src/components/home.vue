@@ -43,7 +43,7 @@
               <i class="el-icon-location"></i>
               <span>商品管理</span>
             </template>
-            <el-menu-item index="1-1"><i class="el-icon-caret-right"></i>商品列表</el-menu-item>
+            <el-menu-item index="categories"><i class="el-icon-caret-right"></i>商品列表</el-menu-item>
             <el-menu-item index="1-2"><i class="el-icon-caret-right"></i>商品分类</el-menu-item>
             <el-menu-item index="1-2"><i class="el-icon-caret-right"></i>商品分类</el-menu-item>
           </el-submenu>
@@ -61,7 +61,7 @@
               <i class="el-icon-location"></i>
               <span>数据统计</span>
             </template>
-            <el-menu-item index="1-1"><i class="el-icon-caret-right"></i>数据统计</el-menu-item>
+            <el-menu-item index="statistics"><i class="el-icon-caret-right"></i>数据统计</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -83,6 +83,8 @@
     },
     // 验证是否有正确token值，如果没有则跳转回login进行登陆
     created() {
+      console.log(localStorage.getItem('token'));
+
       if (!localStorage.getItem('token')) {
         this.$router.push('login')
       }
@@ -102,18 +104,13 @@
       gotoHome() {
         this.$router.push('index');
       },
-      getUser() {
-        // 定义请求头token
-        const AUTH_TOKEN = localStorage.getItem("token");
-        // 获取保存的token值
-        this.$axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+      async getUser() {
         // 将用户id转换为数字类型
         const Id = Number(localStorage.getItem('userid'));
         // 携带用户id请求用户信息，将用户名显示到欢迎后
-        this.$axios.get(`users/${Id}`).then((res) => {
-          // console.log(res);
-          this.userInfo = res.data.data.username;
-        });
+        const res = await this.$axios.get(`users/${Id}`);
+        // console.log(res);
+        this.userInfo = res.data.data.username;
       }
     },
   }

@@ -31,13 +31,15 @@
     methods: {
       async stateDataget() {
         const res = await this.$axios.get(`rights/list`);
-        console.log(res);
+        // console.log(res);
         const { data: { data, meta: { msg, status } } } = res;
-        console.log(data);
+        // console.log(data);
         if (status === 200) {
           this.stateData = data;
-        }
-
+        } else if (status === 400) {
+          this.$message.error(msg);
+          this.$router.push('login');
+        };
       }
     },
   }

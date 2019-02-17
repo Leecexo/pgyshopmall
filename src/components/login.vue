@@ -23,21 +23,21 @@
       };
     },
     methods: {
-      login() {
-        this.$axios.post('login', this.formData).then((res) => {
-          const { data: { data, meta: { msg, status } } } = res
-          if (status === 200) {
-            // console.log(data.id);
-            // this.$router.push({ name: 'home', params: { userId: data.id } });
-            this.$router.push('index');
-            localStorage.setItem('userid', data.id);
-            localStorage.setItem('token', data.token);
-            // console.log(data.id);
-            // console.log(localStorage.getItem('userid'));
-          } else {
-            this.$message.error(msg)
-          }
-        })
+      async login() {
+        const res = await this.$axios.post('login', this.formData);
+        const { data: { data, meta: { msg, status } } } = res;
+        if (status === 200) {
+          // console.log(data.id);
+          // this.$router.push({ name: 'home', params: { userId: data.id } });
+          this.$router.push('index');
+          localStorage.setItem('userid', data.id);
+          localStorage.setItem('token', data.token);
+          // console.log(data.id);
+          // console.log(localStorage.getItem('userid'));
+        } else {
+          this.$message.error(msg)
+        }
+
       }
     },
   }
