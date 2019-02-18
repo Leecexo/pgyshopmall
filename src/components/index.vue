@@ -53,7 +53,7 @@
             <el-table-column label="姓名" width="60px">
               <img src="../assets/msg/userico.png" alt="用户ico加载中..." class="userico">
             </el-table-column>
-            <el-table-column prop="username" width="100%">
+            <el-table-column prop="username" width="100%" label-class-name="userlabeltitle">
             </el-table-column>
             <el-table-column label="注册时间">
               <template slot-scope="scope">
@@ -95,10 +95,33 @@
       <el-col :span="8">
         <el-card>
           <div class="newuser">
-            <h4>订单统计</h4>
-            <span @click="categorieslist()">更多>></span>
+            <h4>未处理订单</h4>
+            <span @click="orderslist()">更多>></span>
           </div>
-          <div class="grid-content bg-purple"></div>
+          <el-table :data="ordersData" style="width: 100%">
+            <el-table-column label="订单ID" prop="order_id" width="80px"></el-table-column>
+            <el-table-column prop="is_send" label="支付状态" width="80px" class-name="ordersname" label-class-name="gooslabel">
+              <template slot-scope="scope">
+                <span v-if="scope.row.pay_status==='0'">未付款</span>
+                <span v-if="scope.row.pay_status==='1'">已付款</span>
+                <!-- <span v-if="scope.row.is_send===2">已审核</span> -->
+              </template>
+            </el-table-column>
+            <el-table-column prop="is_send" label="发货状态" width="80px">
+              <template slot-scope="scope">
+                <span v-if="scope.row.is_send==='否'">未发货</span>
+                <span v-if="scope.row.is_send==='是'">已发货</span>
+                <!-- <span v-if="scope.row.is_send===2">已审核</span> -->
+              </template>
+            </el-table-column>
+            <el-table-column label="下单时间">
+              <template slot-scope="scope">
+                <!-- frmDate是main.js中过滤器的名字  -->
+                {{scope.row.create_time|frmDate}}
+              </template>
+            </el-table-column>
+
+          </el-table>
         </el-card>
       </el-col>
     </el-row>
@@ -112,12 +135,14 @@
       return {
         userData: [], // 用户列表初始值
         categoriesData: [], // 商品列表初始值
+        ordersData: [],// 订单列表初始值
       }
     },
     created() {
       // 加载用户列表首屏数据
       this.getUserData();
       this.getcategoriesData();
+      this.orderslist();
     },
     methods: {
       // 加载用户列表首屏数据
@@ -155,10 +180,27 @@
         } else if (status === 200) {
           // console.log(res);
           const { goods } = data;
-          console.log(goods);
-          console.log(goods.goods_state);
-
+          // console.log(goods);
+          // console.log(goods.goods_state);
           this.categoriesData = goods;
+        };
+      },
+      // 订单列表入口
+      async orderslist() {
+        // 发送数据请求
+        const res = await this.$axios.get(`orders?query=&pagenum=1&pagesize=5}`);
+        // console.log(res);
+        const { data, meta: { msg, status } } = res.data;
+        if (status === 400) {
+          this.$message.error(msg);
+          this.$router.push('login');
+        } else if (status === 404) {
+          this.$message.error("服务器繁忙请稍后再试！");
+        } else if (status === 200) {
+          const { goods } = data;
+          // console.log(goods);
+          // console.log(goods.goods_state);
+          this.ordersData = goods;
         };
       },
     },
@@ -169,9 +211,19 @@
     height: 45px;
   }
 
-  .gooslabel div {
-    height: auto;
+  .ordersname div {
+    height: 45px;
+    line-height: 45px !important;
   }
+
+  .userlabeltitle {
+    height: 45px;
+
+  }
+
+  /* .gooslabel div {
+    height: auto;
+  } */
 
   .user {
     margin-bottom: 10px;

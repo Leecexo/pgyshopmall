@@ -83,8 +83,7 @@
     },
     // 验证是否有正确token值，如果没有则跳转回login进行登陆
     created() {
-      console.log(localStorage.getItem('token'));
-
+      // console.log(localStorage.getItem('token'));
       if (!localStorage.getItem('token')) {
         this.$router.push('login')
       }
