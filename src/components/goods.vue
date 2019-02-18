@@ -5,6 +5,7 @@
     <!-- 添加按钮 -->
     <el-button type="primary" plain>添加商品</el-button>
     <!-- 表单部分 -->
+
   </el-card>
 </template>
 <script>
