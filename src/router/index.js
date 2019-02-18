@@ -2,12 +2,15 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/login.vue'
 import Home from '../components/home.vue'
-import user from '../components/user.vue'
+import users from '../components/users.vue'
 import index from '../components/index.vue'
-import state from '../components/state.vue'
-import role from '../components/role.vue'
-import categories from '../components/categories.vue';
-import statistics from '../components/statistics.vue'
+import rights from '../components/rights.vue'
+import roles from '../components/roles.vue'
+import goods from '../components/goods.vue';
+import reports from '../components/reports.vue'
+import params from '../components/params.vue';
+import categories from '../components/categories.vue'
+import orders from '../components/orders.vue'
 
 Vue.use(Router)
 
@@ -26,26 +29,37 @@ export default new Router({
         path: '/index',
         component: index
       }, {
-        name: 'user', // 用户列表路由
-        path: '/user',
-        component: user
+        name: 'users', // 用户列表路由
+        path: '/users',
+        component: users
       }, {
-        name: 'state', // 权限列表路由
-        path: '/state',
-        component: state
+        name: 'rights', // 权限列表路由
+        path: '/rights',
+        component: rights
       }, {
-        name: 'role', // 角色列表路由
-        path: '/role',
-        component: role
+        name: 'roles', // 角色列表路由
+        path: '/roles',
+        component: roles
       }, {
-        name: 'categories', // 商品列表路由
+        name: 'goods', // 商品列表路由
+        path: '/goods',
+        component: goods
+      }, {
+        name: 'params', // 分类参数路由
+        path: '/params',
+        component: params
+      }, {
+        name: 'categories', // 商品分类路由
         path: '/categories',
         component: categories
-      },
-      {
-        name: 'statistics', // 统计报表路由
-        path: '/statistics',
-        component: statistics
+      }, {
+        name: 'orders', // 订单列表路由
+        path: '/orders',
+        component: orders
+      }, {
+        name: 'reports', // 统计报表路由
+        path: '/reports',
+        component: reports
       },]
     },
     {

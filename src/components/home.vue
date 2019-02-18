@@ -19,54 +19,20 @@
       <el-aside class="aside" width="200px">
         <!-- 菜单 -->
         <el-menu default-active="1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b"
-          unique-opened router>
-          <!-- 用户管理 -->
-          <el-submenu index="1">
+          unique-opened router :data="menuData">
+          <!-- 菜单列表 -->
+          <el-submenu :index="i+''" v-for="(item,i) in menuData" :key="item.id">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{item.authName}}</span>
             </template>
-            <el-menu-item index="user"><i class="el-icon-caret-right"></i>用户列表</el-menu-item>
-          </el-submenu>
-          <!-- 权限管理 -->
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>权限管理</span>
-            </template>
-            <el-menu-item index="role"><i class="el-icon-caret-right"></i>角色列表</el-menu-item>
-            <el-menu-item index="state"><i class="el-icon-caret-right"></i>权限列表</el-menu-item>
-          </el-submenu>
-          <!-- 商品管理 -->
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>商品管理</span>
-            </template>
-            <el-menu-item index="categories"><i class="el-icon-caret-right"></i>商品列表</el-menu-item>
-            <el-menu-item index="1-2"><i class="el-icon-caret-right"></i>商品分类</el-menu-item>
-            <el-menu-item index="1-2"><i class="el-icon-caret-right"></i>商品分类</el-menu-item>
-          </el-submenu>
-          <!-- 订单管理 -->
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>订单管理</span>
-            </template>
-            <el-menu-item index="1-1"><i class="el-icon-caret-right"></i>订单列表</el-menu-item>
-          </el-submenu>
-          <!-- 数据统计 -->
-          <el-submenu index="5">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>数据统计</span>
-            </template>
-            <el-menu-item index="statistics"><i class="el-icon-caret-right"></i>数据统计</el-menu-item>
+            <el-menu-item :index="item2.path" v-for="(item2,i) in item.children"><i class="el-icon-caret-right"></i>{{item2.authName}}</el-menu-item>
           </el-submenu>
         </el-menu>
+        <!-- 菜单列表 end -->
       </el-aside>
       <el-main class="main">
-
+        <!-- 主体部分 -->
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -79,17 +45,18 @@
     data() {
       return {
         userInfo: '管理员',
+        menuData: [],
       }
     },
-    // 验证是否有正确token值，如果没有则跳转回login进行登陆
     created() {
-      // console.log(localStorage.getItem('token'));
       if (!localStorage.getItem('token')) {
         this.$router.push('login')
-      }
+      };
+
     },
     mounted() {
       this.getUser();
+      this.getmenu();
     },
     methods: {
       // 退出方法
@@ -100,16 +67,29 @@
         this.$router.push('login');
         this.$message.success('退出登陆成功！');
       },
+      // 跳转到首页组件
       gotoHome() {
         this.$router.push('index');
       },
+      // 展示当前登陆用户名
       async getUser() {
         // 将用户id转换为数字类型
         const Id = Number(localStorage.getItem('userid'));
         // 携带用户id请求用户信息，将用户名显示到欢迎后
         const res = await this.$axios.get(`users/${Id}`);
-        // console.log(res);
         this.userInfo = res.data.data.username;
+      },
+      // 读取当前用户的权限菜单
+      async getmenu() {
+        const res = await this.$axios.get(`menus`);
+        // console.log(res);
+        const { data, meta: { msg, status } } = res.data;
+        if (status === 200) {
+          this.menuData = data;
+        } else {
+          this.$message.error('获取数据失败，请稍后重试！');
+        }
+
       }
     },
   }

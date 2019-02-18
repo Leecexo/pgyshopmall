@@ -1,9 +1,9 @@
 <template>
   <el-card>
     <!-- 面包屑导航 -->
-    <crumbs val1="商品管理" val2="商品分类"></crumbs>
+    <crumbs val1="商品管理" val2="商品列表"></crumbs>
     <!-- 添加按钮 -->
-    <el-button type="primary" plain>添加商品分类</el-button>
+    <el-button type="primary" plain>添加商品</el-button>
     <!-- 表单部分 -->
   </el-card>
 </template>
