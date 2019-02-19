@@ -2,17 +2,21 @@
   <el-card>
     <!-- 面包屑导航 -->
     <crumbs val1="商品管理" val2="商品列表"></crumbs>
+    <!-- 搜索 -->
+    <el-input placeholder="请输入内容" v-model="query" class="search" clearable @clear="clearInputVal()">
+      <el-button slot="append" icon="el-icon-search" @click="gotosearch()"></el-button>
+    </el-input>
     <!-- 添加按钮 -->
     <el-button type="primary" plain class="goods">添加商品</el-button>
     <!-- 表单部分 -->
     <el-table :data="tableData" style="width: 100%">
       <el-table-column prop="goods_id" label="#" width="80">
       </el-table-column>
-      <el-table-column prop="goods_name" label="商品名称" width="300" class-name="goosname" label-class-name="gooslabel">
+      <el-table-column prop="goods_name" label="商品名称" width="450" class-name="goosname" label-class-name="gooslabel">
       </el-table-column>
-      <el-table-column prop="goods_price" label="商品价格(元)" width="210">
+      <el-table-column prop="goods_price" label="商品价格(元)" width="120">
       </el-table-column>
-      <el-table-column prop="goods_weight" label="商品重量" width="210">
+      <el-table-column prop="goods_weight" label="商品重量" width="120">
       </el-table-column>
       <el-table-column prop="add_time" label="创建日期" width="120">
         <template slot-scope="scope">
@@ -25,7 +29,7 @@
           <el-row>
             <el-button @click="editUsershow(scope.row)" type="primary" icon="el-icon-edit" circle size="mini" plain></el-button>
             <el-button @click="deleteUser(scope.row)" type="danger" icon="el-icon-delete" circle size="mini" plain></el-button>
-            <el-button @click="statusUser(scope.row)" type="success" icon="el-icon-check" circle size="mini" plain></el-button>
+            <!-- <el-button @click="statusUser(scope.row)" type="success" icon="el-icon-check" circle size="mini" plain></el-button> -->
           </el-row>
         </template>
       </el-table-column>
@@ -53,6 +57,9 @@
       this.getgoods();
     },
     methods: {
+      async gotosearch() {
+
+      },
       async getgoods() {
         const res = await this.$axios.get(`goods?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
         console.log(res);
