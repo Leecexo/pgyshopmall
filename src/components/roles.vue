@@ -29,6 +29,9 @@
               </el-row>
             </el-col>
           </el-row>
+          <el-row v-if="scope.row.children.length==0" class="lableDefu">
+            <span>未分配权限</span>
+          </el-row>
         </template>
       </el-table-column>
       <el-table-column type="index" label="#" width="80px"></el-table-column>
@@ -295,5 +298,9 @@
 
   .sjtag {
     margin-right: 4px;
+  }
+
+  .lableDefu {
+    text-align: center;
   }
 </style>

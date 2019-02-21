@@ -67,7 +67,7 @@
       </div>
     </el-dialog>
     <!-- 编辑用户 信息弹窗 -->
-    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit" @close="userClose()">
       <el-form label-position="left" label-width="80px" :model="formData" :rules="rules">
         <el-form-item label="姓名" prop="username">
           <el-input v-model="formData.username" disabled></el-input>
@@ -82,7 +82,6 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
         <el-button type="primary" @click="editUser(formData.id)">保 存</el-button>
-        <!-- <el-button type="primary" @click="userAdd()">确 定</el-button> -->
       </div>
     </el-dialog>
     <!-- 编辑用户权限 信息弹窗 -->
@@ -142,20 +141,21 @@
       this.getOneData();
     },
     methods: {
+      // 编辑用户的close事件
+      userClose() {
+        this.getOneData();
+      },
       handleSizeChange(val) {
-        // console.log(`每页 ${val} 条`);
         this.pagenum = 1;
         this.pagesize = val;
         this.getOneData();
       },
       handleCurrentChange(val) {
-        // console.log(`当前页: ${val}`);
         this.pagenum = val;
         this.getOneData();
       },
       // 修改用户权限-展示
       async statusUser(user) {
-        // console.log(user);
         this.formData = user;
         this.dialogFormVisibleStatus = true; // 展示修改权限框
         this.usersName = user.username; // 给用户名位置赋值
@@ -176,7 +176,6 @@
       },
       // 修改用户权限-提交
       async editUserStatus(user) {
-        // console.log(this.userStateval);
         const res = await this.$axios.put(`users/${user.id}/role`, { rid: this.userStateval });
         const { data: { data, meta: { msg, status } } } = res;
         if (status === 200) {
@@ -200,8 +199,6 @@
       },
       // 添加用户-post
       async userAdd() {
-        // 定义请求头token 获取保存的token值
-        // this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
         const res = await this.$axios.post(`users`, this.formData);
         const { data: { data, meta: { msg, status } } } = res;
         if (status === 201) {
@@ -215,10 +212,7 @@
       },
       // 修改用户状态
       async stateEdit(user) {
-        // 定义请求头token = 获取保存的token值
-        // this.$axios.defaults.headers.common["Authorization"] = localStorage.getItem("token");
         const res = await this.$axios.put(`users/${user.id}/state/${user.mg_state}`);
-        // console.log(res);
         const { data: { data, meta: { msg, status } } } = res;
         if (status === 200) {
           this.$message.success("修改成功！");
@@ -238,16 +232,14 @@
       },
       // 修改用户信息
       async editUser(userid) {
-        // console.log(userid);
         const res = await this.$axios.put(`users/${userid}`, this.formData);
-        // console.log(res, this.formData);
         const { data: { data, meta: { msg, status } } } = res;
         if (status === 200) {
           this.$message.success(msg);
           // 关闭弹窗
           this.dialogFormVisibleEdit = false;
-          // 刷新当前页
-          this.getOneData();
+          // 刷新当前页 在close中有，此处可以不用刷新页面
+          // this.getOneData();
         } else if (status === 404) {
           this.$message.error("服务器繁忙请稍后再试！");
         }

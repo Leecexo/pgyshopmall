@@ -7,6 +7,8 @@ import index from '../components/index.vue'
 import rights from '../components/rights.vue'
 import roles from '../components/roles.vue'
 import goods from '../components/goods.vue';
+import goodsadd from '../components/goodsadd.vue';
+import goodsedit from '../components/goodsedit.vue';
 import reports from '../components/reports.vue'
 import params from '../components/params.vue';
 import categories from '../components/categories.vue'
@@ -44,6 +46,14 @@ export default new Router({
         name: 'goods', // 商品列表路由
         path: '/goods',
         component: goods
+      }, {
+        name: 'goodsadd', // 商品添加路由
+        path: '/goodsadd',
+        component: goodsadd
+      }, {
+        name: 'goodsedit', // 商品编辑路由
+        path: '/goodsedit/:id',
+        component: goodsedit
       }, {
         name: 'params', // 分类参数路由
         path: '/params',
