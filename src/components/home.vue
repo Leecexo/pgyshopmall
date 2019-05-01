@@ -18,7 +18,7 @@
     <el-container>
       <el-aside class="aside" width="200px">
         <!-- 菜单 -->
-        <el-menu default-active="1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b"
+        <el-menu :default-active="$route.name" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b"
           unique-opened router :data="menuData">
           <!-- 菜单列表 -->
           <el-submenu :index="i+''" v-for="(item,i) in menuData" :key="item.id">

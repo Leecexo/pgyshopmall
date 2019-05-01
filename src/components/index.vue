@@ -162,11 +162,11 @@
       },
       // 用户列表入口
       userlist() {
-        this.$router.push('user');
+        this.$router.push('users');
       },
       // 商品列表入口
       categorieslist() {
-        this.$router.push('categories');
+        this.$router.push('goods');
       },
       async getcategoriesData() {
         // 发送数据请求
@@ -178,10 +178,7 @@
         } else if (status === 404) {
           this.$message.error("服务器繁忙请稍后再试！");
         } else if (status === 200) {
-          // console.log(res);
           const { goods } = data;
-          // console.log(goods);
-          // console.log(goods.goods_state);
           this.categoriesData = goods;
         };
       },

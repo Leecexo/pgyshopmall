@@ -13,6 +13,9 @@ Vue.use(HttpServer);
 // 引入面包屑导航组件
 import crumbs from './components/crumbs.vue'
 Vue.component(crumbs.name, crumbs);
+// 引入表格中树插件 element-tree-grid
+import ElTreeGrid from 'element-tree-grid'
+Vue.component(ElTreeGrid.name, ElTreeGrid);
 // 引入echarts报表模块
 // import echarts from 'echarts';
 import ECharts from 'vue-echarts/components/ECharts.vue'
