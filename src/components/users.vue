@@ -102,7 +102,16 @@
         <el-button type="primary" @click="editUserStatus(formData)">确 定</el-button>
       </div>
     </el-dialog>
-
+    <!-- 编辑用户权限 信息弹窗 end -->
+    <!-- 删除用户弹窗 -->
+    <el-dialog title="提示" :visible.sync="dialogVisibleUsersDelete" width="30%" :before-close="handleClose">
+      <span><i class="el-icon-warning"></i>删除后将不能恢复，是否真的要删除？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleUsersDelete = false">取 消</el-button>
+        <el-button type="primary" @click="usersDelete()">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 删除用户弹窗 end -->
   </el-card>
 </template>
 <script>
@@ -135,6 +144,8 @@
             { required: true, message: '请输入用户密码', trigger: 'blur' }
           ],
         },
+        dialogVisibleUsersDelete: false, // 删除弹窗 初始值
+        user: [], // 要删除用户信息 初始值
       }
     },
     created() {
@@ -246,28 +257,26 @@
       },
       // 删除用户
       deleteUser(user) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          const res = await this.$axios.delete(`users/${user.id}`);
-          const { data: { data, meta: { msg, status } } } = res;
-          // console.log(res);
-          if (status === 200) {
-            this.$message.success(msg);
-            // 关闭弹窗
-            this.dialogFormVisibleEdit = false;
-            // 刷新当前页
-            this.pagenum = 1;
-            this.getOneData();
-          } else if (status === 404) {
-            this.$message.error("服务器繁忙请稍后再试！");
-          }
-
-        }).catch(() => {
-          this.$message.info('已取消删除!');
-        });
+        this.user = user;
+        this.dialogVisibleUsersDelete = true;
+      },
+      // 删除用户 - 关闭
+      handleClose() {
+        this.dialogVisibleUsersDelete = true;
+      },
+      async usersDelete() {
+        const res = await this.$axios.delete(`users/${this.user.id}`);
+        const { data: { data, meta: { msg, status } } } = res;
+        if (status === 200) {
+          this.$message.success(msg);
+          // 关闭弹窗
+          this.dialogVisibleUsersDelete = false;
+          // 刷新当前页
+          this.pagenum = 1;
+          this.getOneData();
+        } else if (status === 404) {
+          this.$message.error("服务器繁忙请稍后再试！");
+        }
       },
       // 加载首屏数据
       async getOneData() {
@@ -297,5 +306,12 @@
 
   .userList {
     margin-bottom: 15px;
+  }
+
+  .el-icon-warning {
+    color: #E6A23C;
+    font-size: 30px;
+    vertical-align: middle;
+    margin-right: 5px;
   }
 </style>

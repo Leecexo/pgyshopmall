@@ -41,6 +41,15 @@
       :page-size="pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
     </el-pagination>
     <!-- 分页 end -->
+    <!-- 商品删除弹窗 -->
+    <el-dialog title="提示" :visible.sync="dialogVisibleGoodsDelete" width="30%" :before-close="handleClose">
+      <span><i class="el-icon-warning"></i>删除后将不能恢复，是否真的要删除？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisibleGoodsDelete = false">取 消</el-button>
+        <el-button type="primary" @click="goodsDelete()">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 商品删除弹窗 end -->
   </el-card>
 </template>
 <script>
@@ -52,6 +61,8 @@
         pagesize: 10, // 每页商品量 初始值
         query: '', // 搜索框 初始值
         total: -1, // 总商品量 初始值
+        goods: [], // 当前要删除商品信息
+        dialogVisibleGoodsDelete: false
       }
     },
     created() {
@@ -93,12 +104,22 @@
       goodsedit(goods) {
         this.$router.push({ name: 'goodsedit', params: { id: goods.goods_id } });
       },
-      async goodsdelete(goods) {
-        console.log(goods);
-        const res = await this.$axios.delete(`goods/${goods.goods_id}`);
-        console.log(res);
+      // 删除弹窗显示
+      goodsdelete(goods) {
+        this.goods = goods;
+        this.dialogVisibleGoodsDelete = true;
+
+      },
+      // 删除弹窗-关闭
+      handleClose() {
+        this.dialogVisibleGoodsDelete = false;
+      },
+      // 删除弹窗-删除确认操作
+      async goodsDelete() {
+        const res = await this.$axios.delete(`goods/${this.goods.goods_id}`);
         const { meta: { msg, status } } = res.data;
         if (status === 200) {
+          this.dialogVisibleGoodsDelete = false;
           this.$message.success(msg);
           this.getgoods();
         }
@@ -111,15 +132,12 @@
     margin: 10px 0;
   }
 
-  /* .goosname div {
-    height: 45px;
+  .el-icon-warning {
+    color: #E6A23C;
+    font-size: 30px;
+    vertical-align: middle;
+    margin-right: 5px;
   }
-
-  .ordersname div {
-    height: auto;
-    height: 45px;
-    line-height: 45px !important;
-  } */
 
   .search {
     width: 300px;
